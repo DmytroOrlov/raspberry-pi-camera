@@ -1,5 +1,7 @@
 from typing import Union
+import io
 from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 
 import cv2
 
@@ -15,8 +17,9 @@ def read_root():
 
 @app.get("/image")
 def image():
-  ret, frame = cap.read()
-  return frame
+  res, frame = cap.read()
+  res, im_jpeg = cv2.imencode(".jpeg", frame)
+  return StreamingResponse(io.BytesIO(im_jpeg.tobytes()), media_type="image/jpeg")
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
