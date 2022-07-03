@@ -6,8 +6,6 @@ from fastapi.responses import StreamingResponse
 import cv2
 
 from PCA9685 import PCA9685
-
-
 class Servo:
   def __init__(self):
     self.PwmServo = PCA9685(0x40, debug=True)
@@ -36,9 +34,13 @@ class Servo:
       self.PwmServo.setServoPulse(15, 500 + int((angle + error) / 0.09))
 
 app = FastAPI()
+
 pwm=Servo()
 pwm.setServoPwm('0', 90)
 pwm.setServoPwm('1', 90)
+
+from Led import *
+led=Led()
 
 @app.get("/")
 def image():
@@ -51,3 +53,15 @@ def image():
   res, im_jpeg = cv2.imencode(".jpeg", frame)
   cap.release()
   return StreamingResponse(io.BytesIO(im_jpeg.tobytes()), media_type="image/jpeg")
+
+@app.get("/led")
+def read_item(r: int, g: int, b: int):
+  led.ledIndex(0x01, r, g, b)
+  led.ledIndex(0x02, r, g, b)
+  led.ledIndex(0x04, r, g, b)
+  led.ledIndex(0x08, r, g, b)
+  led.ledIndex(0x10, r, g, b)
+  led.ledIndex(0x20, r, g, b)
+  led.ledIndex(0x40, r, g, b)
+  led.ledIndex(0x80, r, g, b)
+  return ""
