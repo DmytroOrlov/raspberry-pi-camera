@@ -55,7 +55,7 @@ def image():
   return StreamingResponse(io.BytesIO(im_jpeg.tobytes()), media_type="image/jpeg")
 
 @app.get("/led")
-def read_item(r: int, g: int, b: int):
+def led_on(r: int, g: int, b: int):
   led.ledIndex(0x01, r, g, b)
   led.ledIndex(0x02, r, g, b)
   led.ledIndex(0x04, r, g, b)
@@ -64,4 +64,9 @@ def read_item(r: int, g: int, b: int):
   led.ledIndex(0x20, r, g, b)
   led.ledIndex(0x40, r, g, b)
   led.ledIndex(0x80, r, g, b)
+  return ""
+
+@app.get("/led-off")
+def led_off():
+  led.colorWipe(led.strip, Color(0,0,0))
   return ""
