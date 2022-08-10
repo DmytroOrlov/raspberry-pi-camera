@@ -36,7 +36,7 @@ def image():
     # for ii in range(10):
     #   cap.grab()
     res, frame = cap.read()
-    res, im_jpeg = cv2.imencode(".jpeg", frame)
+    res, im_jpeg = cv2.imencode(".jpeg", cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     cap.release()
     return StreamingResponse(io.BytesIO(im_jpeg.tobytes()), media_type="image/jpeg")
 
